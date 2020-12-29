@@ -1,7 +1,7 @@
 import json
 import os
 
-data = [{"name":"madhan","age":20,"email":"madhansubramani20022000@gmail.com","friend":"pradeep"}]
+data = [{"name":"madhan","age":20,"email":"madhansubramani20022000@gmail.com"}]
 # NF - Non-Functional
 # F - functional 
 
