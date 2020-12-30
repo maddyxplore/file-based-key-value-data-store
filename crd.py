@@ -34,8 +34,8 @@ def create(key,value,time_to_live=0):
     try:
         if check_size(value) and key.isalpha(): # constraints to check the size and key whether it is a alphabet or not
             if key not in data: # check whether key is present in data or not
-                ex_time = time.time() + time_to_live
-                data[key] = {value,ex_time}
+                ex_time = time.time() + time_to_live if time_to_live != 0 else 0
+                data[key] = [value,ex_time]
                 with open("data_file.json","w") as data_file:
                     temp_data = json.dumps(data,indent=2)
                     data_file.write(temp_data)
