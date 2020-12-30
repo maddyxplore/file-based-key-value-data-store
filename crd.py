@@ -48,6 +48,3 @@ def create(key,value,time_to_live=0):
         print(e)
 
 check_file()
-create("nametwo","madhan",0)
-print(data)
-
