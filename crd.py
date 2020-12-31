@@ -2,21 +2,23 @@ import time
 import json
 import os
 
-data = {}
+data = {} # dictionary acts as a JSON in python
 
 def check_file(): # to check json file is present or not , if not create a new one with initial data
     global data
-    if os.path.exists("data_file.json"):
-        data = json.loads(open("data_file.json").read())
-        print(data)
-    else:
-        with open("data_file.json","w") as data_file:
-            d = {"name":"madhan","age":20}
-            data1 = json.dumps(d,indent=2)
-            data_file.write(data1)
-            data_file.close()
-        data = json.loads(open("data_file.json").read())
-        print(data)
+    try:
+        if os.path.exists("data_file.json"):
+            data = json.loads(open("data_file.json").read())
+        else:
+            with open("data_file.json","w") as data_file:
+                data = {}
+                data1 = json.dumps(data,indent=2)
+                data_file.write(data1)
+                data_file.close()
+            data = json.loads(open("data_file.json").read())
+        return True
+    except Exception:
+        print("File is Empty")
 
 
 def check_size(value): # to check the size of the file and check the value size
@@ -30,21 +32,58 @@ def check_size(value): # to check the size of the file and check the value size
     else:
         raise Exception("Error!! file and value limit Exceeded...")
 
+def update():
+    with open("data_file.json","w") as data_file:
+        temp_data = json.dumps(data,indent=2)
+        data_file.write(temp_data)
+        data_file.close()
+
 def create(key,value,time_to_live=0):
     try:
         if check_size(value) and key.isalpha(): # constraints to check the size and key whether it is a alphabet or not
             if key not in data: # check whether key is present in data or not
                 ex_time = time.time() + time_to_live if time_to_live != 0 else 0
                 data[key] = [value,ex_time]
-                with open("data_file.json","w") as data_file:
-                    temp_data = json.dumps(data,indent=2)
-                    data_file.write(temp_data)
-                    data_file.close()
+                update()
+                print("data created")
             else:
                 print("Error || key is already present in data_store")
         else:
             print("Error || Key must Contains only alphabet characters")
     except Exception as e:
         print(e)
+
+def read(key):
+    if check_file():
+        if key in data:
+            if data[key][1] ==0:
+                print(data[key][0])
+            else:
+                if data[key][1] >= time.time():
+                    print(data[key][0])
+                else:
+                    print("Error || key has been expired")
+            pass
+        else:
+            print("Error || Key is not present in data")
+
+
+def delete(key):
+    if check_file():
+        if key in data:
+            if data[key][1] ==0:
+                del (data[key])
+                update()
+                print("Value Deleted")
+            else:
+                if data[key][1] >= time.time():
+                    del (data[key])
+                    update()
+                    print("Value Deleted")
+                else:
+                    print("Error || key has been expired")
+            pass
+        else:
+            print("Error || Key is not present in data")
 
 check_file()
