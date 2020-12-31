@@ -5,7 +5,6 @@ import crd as data_store #importing crd file as data_store
 #data_store.read(key) Key = Key --> read the key and value pair
 #data_store.delete(key) Key = Key --> delete the key
 
-
 if __name__ == '__main__':
     # write the testing here
     None
