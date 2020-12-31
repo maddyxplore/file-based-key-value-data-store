@@ -1,13 +1,18 @@
+import threading
 import time
 import json
 import os
 data = {} # dictionary acts as a JSON in python
+lock = threading.Lock() # used to lock the data_file to prevent incorrect data accessing (Thread Safe)
+
 
 def check_file(): # to check json file is present or not , if not create a new one with initial data
     global data
     try:
         if os.path.exists("data_file.json"):
-            data = json.loads(open("data_file.json").read())
+            temp = open("data_file.json")
+            data = json.loads(temp.read())
+            temp.close()
         else:
             with open("data_file.json","w") as data_file:
                 data = {}
@@ -17,10 +22,10 @@ def check_file(): # to check json file is present or not , if not create a new o
             data = json.loads(open("data_file.json").read())
         return True
     except Exception:
-        print("File is Empty")
+        return("File is Empty")
 
 def check_size(value): # to check the size of the file and check the value size
-    value = len(value)
+    value = len(str(value))
     if os.path.getsize("data_file.json")<(1024*1024*1024) and value<(16*1024*1024):
         return True
     elif os.path.getsize("data_file.json")>=(1024*1024*1024) and value<(16*1024*1024):
@@ -32,9 +37,12 @@ def check_size(value): # to check the size of the file and check the value size
 
 def update():
     with open("data_file.json","w") as data_file:
+        lock.acquire() # to use the data file for single thread at a time
         temp_data = json.dumps(data,indent=2)
         data_file.write(temp_data)
         data_file.close()
+        lock.release()
+
 
 def create(key,value,time_to_live=0):
     try:
@@ -43,26 +51,26 @@ def create(key,value,time_to_live=0):
                 ex_time = time.time() + time_to_live if time_to_live != 0 else 0
                 data[key] = [value,ex_time]
                 update()
-                print("data created")
+                return("data created")
             else:
-                print("Error || key is already present in data_store")
+                return("Error || key is already present in data_store")
         else:
-            print("Error || Key must Contains only alphabet characters")
+            return("Error || Key must Contains only alphabet characters")
     except Exception as e:
-        print(e)
+        return(e)
 
 def read(key):
     if check_file():
         if key in data:
             if data[key][1] ==0: # constraints to check the time_to_live for read
-                print(data[key][0]) 
+                return(data[key][0]) 
             else:
                 if data[key][1] >= time.time():
-                    print(data[key][0])
+                    return(data[key][0])
                 else:
-                    print("Error || key has been expired")
+                    return("Error || key has been expired")
         else:
-            print("Error || Key is not present in data")
+            return("Error || Key is not present in data")
 
 def delete(key):
     if check_file():
@@ -70,15 +78,15 @@ def delete(key):
             if data[key][1] ==0: # constraints to check the time_to_live for read
                 del (data[key])
                 update() # to update the data
-                print("Value Deleted")
+                return("Value Deleted")
             else:
                 if data[key][1] >= time.time():
                     del (data[key])
                     update()
-                    print("Value Deleted")
+                    return("Value Deleted")
                 else:
-                    print("Error || key has been expired")
+                    return("Error || key has been expired")
         else:
-            print("Error || Key is not present in data")
+            return("Error || Key is not present in data")
 
 check_file()
