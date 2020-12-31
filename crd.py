@@ -24,7 +24,7 @@ def check_file(): # to check json file is present or not , if not create a new o
     except Exception:
         return("File is Empty")
 
-def check_size(key,value): # to check the size of the file and check the value size
+def check_size(key,value): # to check the size of the file and check the key,value size
     value = len(str(value))
     if os.path.getsize("data_file.json") < (1024*1024*1024):
         if value < (16*1024*1024):
