@@ -33,9 +33,9 @@ def check_size(key,value): # to check the size of the file and check the value s
             else:
                 raise Exception("Error || length of key must be capped with 32 chars")
         else:
-            raise Exception("Error!! File size limit Exceeded...")
+            raise Exception("Error!! value size limit Exceeded...")
     else:
-        raise Exception("Error!! file and value limit Exceeded...")
+        raise Exception("Error!! file limit Exceeded...")
 
 def update():
     with open("data_file.json","w") as data_file:
@@ -66,10 +66,10 @@ def read(key):
     if check_file():
         if key in data:
             if data[key][1] ==0: # constraints to check the time_to_live for read
-                return(data[key][0]) 
+                return({key:data[key][0]})
             else:
                 if data[key][1] >= time.time():
-                    return(data[key][0])
+                    return({key:data[key][0]})
                 else:
                     return("Error || key has been expired")
         else:

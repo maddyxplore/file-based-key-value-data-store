@@ -16,12 +16,10 @@ class Crd_testing(unittest.TestCase):
         for i in d.items():
             data_store.delete(i)
         
-    
     def test_delete(self):
         d = {"up": 1 , "wb":2 , "mh":3,"ka":4,"ra":5} # test for keys in data_store without time_to_live
         for i in d.keys():
             self.assertEqual(data_store.delete(i), "Value Deleted", "Error")
-
 
     def test_read_for_not_in_data_store(self):
         d = {"pa": 6 , "zz":7 , "xx":8,"vv":9,"yy":10}
