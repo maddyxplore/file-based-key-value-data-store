@@ -1,7 +1,6 @@
 import time
 import json
 import os
-
 data = {} # dictionary acts as a JSON in python
 
 def check_file(): # to check json file is present or not , if not create a new one with initial data
@@ -19,7 +18,6 @@ def check_file(): # to check json file is present or not , if not create a new o
         return True
     except Exception:
         print("File is Empty")
-
 
 def check_size(value): # to check the size of the file and check the value size
     value = len(value)
@@ -56,24 +54,22 @@ def create(key,value,time_to_live=0):
 def read(key):
     if check_file():
         if key in data:
-            if data[key][1] ==0:
-                print(data[key][0])
+            if data[key][1] ==0: # constraints to check the time_to_live for read
+                print(data[key][0]) 
             else:
                 if data[key][1] >= time.time():
                     print(data[key][0])
                 else:
                     print("Error || key has been expired")
-            pass
         else:
             print("Error || Key is not present in data")
-
 
 def delete(key):
     if check_file():
         if key in data:
-            if data[key][1] ==0:
+            if data[key][1] ==0: # constraints to check the time_to_live for read
                 del (data[key])
-                update()
+                update() # to update the data
                 print("Value Deleted")
             else:
                 if data[key][1] >= time.time():
@@ -82,7 +78,6 @@ def delete(key):
                     print("Value Deleted")
                 else:
                     print("Error || key has been expired")
-            pass
         else:
             print("Error || Key is not present in data")
 
